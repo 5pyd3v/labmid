@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
 
@@ -8,6 +7,12 @@ pipeline {
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 sh '''
@@ -33,6 +38,10 @@ pipeline {
             }
             steps {
                 sh '''
+                    export MINIKUBE_HOME=/var/lib/jenkins/.minikube
+
+                    minikube image load $IMAGE_NAME:$IMAGE_TAG
+
                     sed "s|IMAGE_PLACEHOLDER|$IMAGE_NAME:$IMAGE_TAG|g" k8s/deployment.yaml \
                       | kubectl apply -f -
 
