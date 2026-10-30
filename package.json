@@ -1,0 +1,13 @@
+{
+  "name": "event-management-system",
+  "version": "1.0.0",
+  "description": "Simple Event Management System for a CI/CD demo",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "node --test test/events.test.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

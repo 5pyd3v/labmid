@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Event Management System</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 720px; margin: 40px auto; }
+    h1 { color: #1F3864; }
+    input, button { padding: 8px; margin: 4px 0; }
+    li { margin: 8px 0; }
+  </style>
+</head>
+<body>
+  <h1>Event Management System</h1>
+  <input id="name" placeholder="Event name">
+  <input id="date" type="date">
+  <input id="venue" placeholder="Venue">
+  <button onclick="addEvent()">Add Event</button>
+  <ul id="list"></ul>
+  <script>
+    const esc = (s) => String(s).replace(/[&<>"']/g, (ch) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+ 
+    async function load() {
+      const res = await fetch('/api/events');
+      const events = await res.json();
+      document.getElementById('list').innerHTML = events.map((e) =>
+        '<li><b>' + esc(e.name) + '</b> - ' + esc(e.date) + ' - ' + esc(e.venue) +
+        ' <button onclick="del(' + Number(e.id) + ')">Delete</button></li>').join('');
+    }
+    async function addEvent() {
+      await fetch('/api/events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: document.getElementById('name').value,
+          date: document.getElementById('date').value,
+          venue: document.getElementById('venue').value
+        })
+      });
+      load();
+    }
+    async function del(id) {
+      await fetch('/api/events/' + id, { method: 'DELETE' });
+      load();
+    }
+    load();
+  </script>
+</body>
+</html>

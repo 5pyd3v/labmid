@@ -1,0 +1,5 @@
+node_modules
+.git
+Jenkinsfile
+k8s
+monitoring
